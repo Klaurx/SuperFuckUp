@@ -77,6 +77,9 @@ Requests whose `claimed` flag was never set to `true` still hold their `assets` 
 An attacker controlling two receiver addresses can submit one small request at queue position N and one large request at position N+M. 
 By lossy-claiming position N+M first with maxLossBps=10000, accClaimedAmount is inflated by the loss delta. This deflates reservedForPriorRequests for the N+M position, making vault liquidity accessible that would otherwise be blocked. If third-party requests occupy positions between N and N+M, those victims absorb the shortage. The attacker's net loss equals the accepted loss on the large claim; the net gain is early access to liquidity that should be reserved for others. Whether this is net-positive depends on queue depth and timing, but the structural ability to drain victim-reserved liquidity is unconditional given authorized access to redeem().
 
+The contract maintains an implicit invariant: accClaimedAmount == Σ assetsOut for all completed claims. 
+The bug breaks this to accClaimedAmount == Σ assetsOut + totalClaimLoss. Every downstream computation that reads accClaimedAmount, including reservedForPriorRequests and implicitly recoverClaimLoss(), operates on a corrupted value from the first lossy claim onward.
+
 ---
 
 ## Concrete numbers from the PoC
