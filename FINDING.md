@@ -74,6 +74,9 @@ After a lossy claim, `totalClaimLoss` contains a real gap that was never funded.
 
 Requests whose `claimed` flag was never set to `true` still hold their `assets` value in `totalLockedAssets`. Once the vault drains, those entries can never be cleared through the normal claim path because `availableLiquidity` is zero. The accounting is permanently broken without direct governance intervention.
 
+An attacker controlling two receiver addresses can submit one small request at queue position N and one large request at position N+M. 
+By lossy-claiming position N+M first with maxLossBps=10000, accClaimedAmount is inflated by the loss delta. This deflates reservedForPriorRequests for the N+M position, making vault liquidity accessible that would otherwise be blocked. If third-party requests occupy positions between N and N+M, those victims absorb the shortage. The attacker's net loss equals the accepted loss on the large claim; the net gain is early access to liquidity that should be reserved for others. Whether this is net-positive depends on queue depth and timing, but the structural ability to drain victim-reserved liquidity is unconditional given authorized access to redeem().
+
 ---
 
 ## Concrete numbers from the PoC
