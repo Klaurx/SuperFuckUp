@@ -76,7 +76,6 @@ contract PoC_accClaimedAmount is Test {
         console.log("totalLockedAssets :", vault.totalLockedAssets());
         console.log("lastRequestId     :", vault.lastRequestId());
 
-        // --------------------------------------------------------------------
         // Reset vault accounting to a clean controlled state.
         //
         // We write directly to storage slots to set:
@@ -89,7 +88,7 @@ contract PoC_accClaimedAmount is Test {
         // We then create three requests totalling 80 USDT so that
         // bob's request (20 USDT) is underfunded relative to alice's
         // reservation (50 USDT), forcing a partial payout on bob's claim.
-        // --------------------------------------------------------------------
+
         vm.store(COOLDOWN_VAULT, bytes32(SLOT_MANAGED_ASSETS),  bytes32(uint256(65e6)));
         vm.store(COOLDOWN_VAULT, bytes32(SLOT_ACC_CLAIMED),     bytes32(uint256(0)));
         vm.store(COOLDOWN_VAULT, bytes32(SLOT_TOTAL_LOCKED),    bytes32(uint256(0)));
@@ -103,11 +102,11 @@ contract PoC_accClaimedAmount is Test {
         console.log("accClaimedAmount  :", vault.accClaimedAmount());
         console.log("USDT balance      :", usdt.balanceOf(COOLDOWN_VAULT));
 
-        // --------------------------------------------------------------------
+
         // Create three redeem requests via STRATEGY (authorised caller).
         // Deposits increase _managedAssets, so we reset it back to 65e6
         // after the three deposits are made.
-        // --------------------------------------------------------------------
+
         vm.startPrank(STRATEGY);
 
         usdt.approve(COOLDOWN_VAULT, 80e6);
@@ -139,7 +138,7 @@ contract PoC_accClaimedAmount is Test {
 
         vm.warp(block.timestamp + cooldown + 1);
 
-        // --------------------------------------------------------------------
+
         // Bob claims req2 first. He is the receiver, so he can pass any
         // maxLossBps value. He passes 10000 (100%) to accept any shortfall.
         //
@@ -153,7 +152,7 @@ contract PoC_accClaimedAmount is Test {
         //
         // Bug fires in effects block:
         //   accClaimedAmount += request.assets  (20e6, not 15e6)
-        // --------------------------------------------------------------------
+
         uint256 claimedBefore = vault.accClaimedAmount();
         uint256 lossBefore    = vault.totalClaimLoss();
 
@@ -186,9 +185,9 @@ contract PoC_accClaimedAmount is Test {
         console.log("[BUG] correct value would be       :", bobOut);
         console.log("[BUG] actual value is              :", claimedDelta);
 
-        // --------------------------------------------------------------------
+
         // Alice claims req1. Vault has 50e6 left. She gets her full amount.
-        // --------------------------------------------------------------------
+
         vm.prank(alice);
         uint256 aliceOut = vault.claim(req1, 0);
 
@@ -197,9 +196,9 @@ contract PoC_accClaimedAmount is Test {
         console.log("_managedAssets    :", vault.assetBalance());
         console.log("accClaimedAmount  :", vault.accClaimedAmount());
 
-        // --------------------------------------------------------------------
+
         // Charlie claims req3. Vault is empty. He gets nothing.
-        // --------------------------------------------------------------------
+
         vm.prank(charlie);
         uint256 charlieOut = vault.claim(req3, 10_000);
 
