@@ -1,0 +1,469 @@
+Ran 1 test for test/PoC_accClaimedAmount.t.sol:PoC_accClaimedAmount
+[PASS] test_accClaimedAmount_inflation() (gas: 975221)
+Logs:
+  === LIVE STATE ===
+  cooldownPeriod    : 86400
+  _managedAssets    : 369399729823
+  accClaimedAmount  : 26219607889633
+  totalLockedAssets : 4999999999999
+  lastRequestId     : 312
+
+  === CONTROLLED STATE ===
+  _managedAssets    : 65000000
+  accClaimedAmount  : 0
+  USDT balance      : 65000000
+
+  === AFTER 3 REDEEM REQUESTS ===
+  req1 id (alice,   50 USDT): 1
+  req2 id (bob,     20 USDT): 2
+  req3 id (charlie, 10 USDT): 3
+  _managedAssets             : 65000000
+  totalLockedAssets          : 80000000
+  accClaimedAmount           : 0
+  accRedeemRequestedAmount[req1]: 50000000
+  accRedeemRequestedAmount[req2]: 70000000
+
+  === BOB CLAIMS req2 (maxLoss=100%) ===
+  Bob requested              : 20000000
+  Bob received (assetsOut)   : 15000000
+  accClaimedAmount delta     : 20000000
+  totalClaimLoss delta       : 5000000
+  _managedAssets             : 50000000
+
+  [BUG] accClaimedAmount inflated by: 5000000 (phantom USDT)
+  [BUG] correct value would be       : 15000000
+  [BUG] actual value is              : 20000000
+
+  === ALICE CLAIMS req1 ===
+  Alice received    : 50000000
+  _managedAssets    : 0
+  accClaimedAmount  : 70000000
+
+  === CHARLIE CLAIMS req3 ===
+  Charlie received  : 0
+  _managedAssets    : 0
+  totalLockedAssets : 0
+  totalClaimLoss    : 15000000
+
+  === FINAL SUMMARY ===
+  Bob received    : 15000000 / 20e6 requested
+  Alice received  : 50000000 / 50e6 requested
+  Charlie received: 0 / 10e6 requested
+  Total paid out  : 65000000 / 80e6 requested
+  Phantom accClaimedAmount inflation : 5000000
+  recoverClaimLoss() would mint this many governance shares backed by nothing: 15000000
+
+Traces:
+  [1224292] PoC_accClaimedAmount::test_accClaimedAmount_inflation()
+    ├─ [7237] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::cooldownPeriod() [staticcall]
+    │   ├─ [2292] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::cooldownPeriod() [delegatecall]
+    │   │   └─ ← [Return] 86400 [8.64e4]
+    │   └─ ← [Return] 86400 [8.64e4]
+    ├─ [0] console::log("=== LIVE STATE ===") [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("cooldownPeriod    :", 86400 [8.64e4]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [4211] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::assetBalance() [staticcall]
+    │   ├─ [3766] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::assetBalance() [delegatecall]
+    │   │   └─ ← [Return] 369399729823 [3.693e11]
+    │   └─ ← [Return] 369399729823 [3.693e11]
+    ├─ [0] console::log("_managedAssets    :", 369399729823 [3.693e11]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [2957] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::accClaimedAmount() [staticcall]
+    │   ├─ [2512] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::accClaimedAmount() [delegatecall]
+    │   │   └─ ← [Return] 26219607889633 [2.621e13]
+    │   └─ ← [Return] 26219607889633 [2.621e13]
+    ├─ [0] console::log("accClaimedAmount  :", 26219607889633 [2.621e13]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [3177] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::totalLockedAssets() [staticcall]
+    │   ├─ [2732] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::totalLockedAssets() [delegatecall]
+    │   │   └─ ← [Return] 4999999999999 [4.999e12]
+    │   └─ ← [Return] 4999999999999 [4.999e12]
+    ├─ [0] console::log("totalLockedAssets :", 4999999999999 [4.999e12]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [4673] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::lastRequestId() [staticcall]
+    │   ├─ [4228] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::lastRequestId() [delegatecall]
+    │   │   └─ ← [Return] 312
+    │   └─ ← [Return] 312
+    ├─ [0] console::log("lastRequestId     :", 312) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] VM::store(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, 0x0000000000000000000000000000000000000000000000000000000000000172, 0x0000000000000000000000000000000000000000000000000000000003dfd240)
+    │   └─ ← [Return]
+    ├─ [0] VM::store(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, 0x000000000000000000000000000000000000000000000000000000000000016e, 0x0000000000000000000000000000000000000000000000000000000000000000)
+    │   └─ ← [Return]
+    ├─ [0] VM::store(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, 0x0000000000000000000000000000000000000000000000000000000000000171, 0x0000000000000000000000000000000000000000000000000000000000000000)
+    │   └─ ← [Return]
+    ├─ [0] VM::store(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, 0x000000000000000000000000000000000000000000000000000000000000016b, 0x0000000000000000000000000000000000000000000000000000000000000000)
+    │   └─ ← [Return]
+    ├─ [9719] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [staticcall]
+    │   ├─ [2559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [delegatecall]
+    │   │   └─ ← [Return] 369399729823 [3.693e11]
+    │   └─ ← [Return] 369399729823 [3.693e11]
+    ├─ [0] VM::record()
+    │   └─ ← [Return]
+    ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [staticcall]
+    │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [delegatecall]
+    │   │   └─ ← [Return] 369399729823 [3.693e11]
+    │   └─ ← [Return] 369399729823 [3.693e11]
+    ├─ [0] VM::accesses(0xd077A400968890Eacc75cdc901F0356c943e4fDb) [staticcall]
+    │   └─ ← [Return] [0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103, 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc, 0xd4364f277ded65c9f38da64ea506b5f3243c9248c93c7f0eaab9ce5e800b5730], []
+    ├─ [0] VM::load(0xd077A400968890Eacc75cdc901F0356c943e4fDb, 0xd4364f277ded65c9f38da64ea506b5f3243c9248c93c7f0eaab9ce5e800b5730) [staticcall]
+    │   └─ ← [Return] 0x0000000000000000000000000000000000000000000000000000005601f08e9f
+    ├─ [0] VM::load(0xd077A400968890Eacc75cdc901F0356c943e4fDb, 0xd4364f277ded65c9f38da64ea506b5f3243c9248c93c7f0eaab9ce5e800b5730) [staticcall]
+    │   └─ ← [Return] 0x0000000000000000000000000000000000000000000000000000005601f08e9f
+    ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [staticcall]
+    │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [delegatecall]
+    │   │   └─ ← [Return] 369399729823 [3.693e11]
+    │   └─ ← [Return] 369399729823 [3.693e11]
+    ├─ [0] VM::store(0xd077A400968890Eacc75cdc901F0356c943e4fDb, 0xd4364f277ded65c9f38da64ea506b5f3243c9248c93c7f0eaab9ce5e800b5730, 0x0000000000000000000000000000000000000000000000000000000000000000)
+    │   └─ ← [Return]
+    ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [staticcall]
+    │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [delegatecall]
+    │   │   └─ ← [Return] 0
+    │   └─ ← [Return] 0
+    ├─ [0] VM::store(0xd077A400968890Eacc75cdc901F0356c943e4fDb, 0xd4364f277ded65c9f38da64ea506b5f3243c9248c93c7f0eaab9ce5e800b5730, 0x0000000000000000000000000000000000000000000000000000005601f08e9f)
+    │   └─ ← [Return]
+    ├─ emit SlotFound(who: 0xd077A400968890Eacc75cdc901F0356c943e4fDb, fsig: 0x70a08231, keysHash: 0xbe9e44dea39f7040eec03921a13edff681263301800e80e252f64639e12d5bfa, slot: 95986279943811519734359138131817895607750593677271746263801057084453411313456 [9.598e76])
+    ├─ [0] VM::load(0xd077A400968890Eacc75cdc901F0356c943e4fDb, 0xd4364f277ded65c9f38da64ea506b5f3243c9248c93c7f0eaab9ce5e800b5730) [staticcall]
+    │   └─ ← [Return] 0x0000000000000000000000000000000000000000000000000000005601f08e9f
+    ├─ [0] VM::store(0xd077A400968890Eacc75cdc901F0356c943e4fDb, 0xd4364f277ded65c9f38da64ea506b5f3243c9248c93c7f0eaab9ce5e800b5730, 0x0000000000000000000000000000000000000000000000000000000003dfd240)
+    │   └─ ← [Return]
+    ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [staticcall]
+    │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [delegatecall]
+    │   │   └─ ← [Return] 65000000 [6.5e7]
+    │   └─ ← [Return] 65000000 [6.5e7]
+    ├─ [3219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [staticcall]
+    │   ├─ [2559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [delegatecall]
+    │   │   └─ ← [Return] 0
+    │   └─ ← [Return] 0
+    ├─ [0] VM::record()
+    │   └─ ← [Return]
+    ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [staticcall]
+    │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [delegatecall]
+    │   │   └─ ← [Return] 0
+    │   └─ ← [Return] 0
+    ├─ [0] VM::accesses(0xd077A400968890Eacc75cdc901F0356c943e4fDb) [staticcall]
+    │   └─ ← [Return] [0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103, 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc, 0x3caa56d91d392f6d69f19fc61288eba3d161ce1e44398bb3b6c566867e16d91a], []
+    ├─ [0] VM::load(0xd077A400968890Eacc75cdc901F0356c943e4fDb, 0x3caa56d91d392f6d69f19fc61288eba3d161ce1e44398bb3b6c566867e16d91a) [staticcall]
+    │   └─ ← [Return] 0x0000000000000000000000000000000000000000000000000000000000000000
+    ├─ emit WARNING_UninitedSlot(who: 0xd077A400968890Eacc75cdc901F0356c943e4fDb, slot: 27439734319580140509823055449500210206162435346601267158725415990405908322586 [2.743e76])
+    ├─ [0] VM::load(0xd077A400968890Eacc75cdc901F0356c943e4fDb, 0x3caa56d91d392f6d69f19fc61288eba3d161ce1e44398bb3b6c566867e16d91a) [staticcall]
+    │   └─ ← [Return] 0x0000000000000000000000000000000000000000000000000000000000000000
+    ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [staticcall]
+    │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [delegatecall]
+    │   │   └─ ← [Return] 0
+    │   └─ ← [Return] 0
+    ├─ [0] VM::store(0xd077A400968890Eacc75cdc901F0356c943e4fDb, 0x3caa56d91d392f6d69f19fc61288eba3d161ce1e44398bb3b6c566867e16d91a, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff)
+    │   └─ ← [Return]
+    ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [staticcall]
+    │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [delegatecall]
+    │   │   └─ ← [Return] 115792089237316195423570985008687907853269984665640564039457584007913129639935 [1.157e77]
+    │   └─ ← [Return] 115792089237316195423570985008687907853269984665640564039457584007913129639935 [1.157e77]
+    ├─ [0] VM::store(0xd077A400968890Eacc75cdc901F0356c943e4fDb, 0x3caa56d91d392f6d69f19fc61288eba3d161ce1e44398bb3b6c566867e16d91a, 0x0000000000000000000000000000000000000000000000000000000000000000)
+    │   └─ ← [Return]
+    ├─ emit SlotFound(who: 0xd077A400968890Eacc75cdc901F0356c943e4fDb, fsig: 0x70a08231, keysHash: 0x0aa50fdcbc94d07731adf4fbca358a2c2ed7a411ffb6e244cf83231b0ce775ac, slot: 27439734319580140509823055449500210206162435346601267158725415990405908322586 [2.743e76])
+    ├─ [0] VM::load(0xd077A400968890Eacc75cdc901F0356c943e4fDb, 0x3caa56d91d392f6d69f19fc61288eba3d161ce1e44398bb3b6c566867e16d91a) [staticcall]
+    │   └─ ← [Return] 0x0000000000000000000000000000000000000000000000000000000000000000
+    ├─ [0] VM::store(0xd077A400968890Eacc75cdc901F0356c943e4fDb, 0x3caa56d91d392f6d69f19fc61288eba3d161ce1e44398bb3b6c566867e16d91a, 0x0000000000000000000000000000000000000000000000000000000004c4b400)
+    │   └─ ← [Return]
+    ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [staticcall]
+    │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [delegatecall]
+    │   │   └─ ← [Return] 80000000 [8e7]
+    │   └─ ← [Return] 80000000 [8e7]
+    ├─ [0] console::log("\n=== CONTROLLED STATE ===") [staticcall]
+    │   └─ ← [Stop]
+    ├─ [2211] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::assetBalance() [staticcall]
+    │   ├─ [1766] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::assetBalance() [delegatecall]
+    │   │   └─ ← [Return] 65000000 [6.5e7]
+    │   └─ ← [Return] 65000000 [6.5e7]
+    ├─ [0] console::log("_managedAssets    :", 65000000 [6.5e7]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [957] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::accClaimedAmount() [staticcall]
+    │   ├─ [512] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::accClaimedAmount() [delegatecall]
+    │   │   └─ ← [Return] 0
+    │   └─ ← [Return] 0
+    ├─ [0] console::log("accClaimedAmount  :", 0) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [staticcall]
+    │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [delegatecall]
+    │   │   └─ ← [Return] 65000000 [6.5e7]
+    │   └─ ← [Return] 65000000 [6.5e7]
+    ├─ [0] console::log("USDT balance      :", 65000000 [6.5e7]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] VM::startPrank(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5)
+    │   └─ ← [Return]
+    ├─ [25281] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::approve(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, 80000000 [8e7])
+    │   ├─ [24618] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::approve(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, 80000000 [8e7]) [delegatecall]
+    │   │   ├─ emit Approval(owner: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, spender: 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, amount: 80000000 [8e7])
+    │   │   └─ ← [Return] true
+    │   └─ ← [Return] true
+    ├─ [39992] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::deposit(50000000 [5e7], 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5)
+    │   ├─ [39541] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::deposit(50000000 [5e7], 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [delegatecall]
+    │   │   ├─ [10885] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::transferFrom(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, 50000000 [5e7])
+    │   │   │   ├─ [10216] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::transferFrom(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, 50000000 [5e7]) [delegatecall]
+    │   │   │   │   ├─ emit Transfer(from: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, to: 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, amount: 50000000 [5e7])
+    │   │   │   │   ├─ emit Approval(owner: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, spender: 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, amount: 30000000 [3e7])
+    │   │   │   │   └─ ← [Return] true
+    │   │   │   └─ ← [Return] true
+    │   │   ├─ emit Transfer(from: 0x0000000000000000000000000000000000000000, to: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, amount: 50000000 [5e7])
+    │   │   ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [staticcall]
+    │   │   │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [delegatecall]
+    │   │   │   │   └─ ← [Return] 115000000 [1.15e8]
+    │   │   │   └─ ← [Return] 115000000 [1.15e8]
+    │   │   └─ ← [Return] 50000000 [5e7]
+    │   └─ ← [Return] 50000000 [5e7]
+    ├─ [18392] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::deposit(20000000 [2e7], 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5)
+    │   ├─ [17941] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::deposit(20000000 [2e7], 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [delegatecall]
+    │   │   ├─ [6885] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::transferFrom(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, 20000000 [2e7])
+    │   │   │   ├─ [6216] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::transferFrom(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, 20000000 [2e7]) [delegatecall]
+    │   │   │   │   ├─ emit Transfer(from: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, to: 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, amount: 20000000 [2e7])
+    │   │   │   │   ├─ emit Approval(owner: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, spender: 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, amount: 10000000 [1e7])
+    │   │   │   │   └─ ← [Return] true
+    │   │   │   └─ ← [Return] true
+    │   │   ├─ emit Transfer(from: 0x0000000000000000000000000000000000000000, to: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, amount: 20000000 [2e7])
+    │   │   ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [staticcall]
+    │   │   │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [delegatecall]
+    │   │   │   │   └─ ← [Return] 135000000 [1.35e8]
+    │   │   │   └─ ← [Return] 135000000 [1.35e8]
+    │   │   └─ ← [Return] 20000000 [2e7]
+    │   └─ ← [Return] 20000000 [2e7]
+    ├─ [18392] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::deposit(10000000 [1e7], 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5)
+    │   ├─ [17941] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::deposit(10000000 [1e7], 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [delegatecall]
+    │   │   ├─ [6885] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::transferFrom(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, 10000000 [1e7])
+    │   │   │   ├─ [6216] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::transferFrom(0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, 10000000 [1e7]) [delegatecall]
+    │   │   │   │   ├─ emit Transfer(from: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, to: 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, amount: 10000000 [1e7])
+    │   │   │   │   ├─ emit Approval(owner: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, spender: 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, amount: 0)
+    │   │   │   │   └─ ← [Return] true
+    │   │   │   └─ ← [Return] true
+    │   │   ├─ emit Transfer(from: 0x0000000000000000000000000000000000000000, to: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, amount: 10000000 [1e7])
+    │   │   ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [staticcall]
+    │   │   │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [delegatecall]
+    │   │   │   │   └─ ← [Return] 145000000 [1.45e8]
+    │   │   │   └─ ← [Return] 145000000 [1.45e8]
+    │   │   └─ ← [Return] 10000000 [1e7]
+    │   └─ ← [Return] 10000000 [1e7]
+    ├─ [117090] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::redeem(50000000 [5e7], alice: [0x328809Bc894f92807417D2dAD6b7C998c1aFdac6], 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5)
+    │   ├─ [116633] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::redeem(50000000 [5e7], alice: [0x328809Bc894f92807417D2dAD6b7C998c1aFdac6], 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [delegatecall]
+    │   │   ├─ emit Transfer(from: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, to: 0x0000000000000000000000000000000000000000, amount: 50000000 [5e7])
+    │   │   ├─ emit RedeemRequested(caller: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, receiver: alice: [0x328809Bc894f92807417D2dAD6b7C998c1aFdac6], requestId: 1, assets: 50000000 [5e7], shares: 50000000 [5e7], requestedTime: 1780052863 [1.78e9])
+    │   │   └─ ← [Return] 1
+    │   └─ ← [Return] 1
+    ├─ [110290] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::redeem(20000000 [2e7], bob: [0x1D96F2f6BeF1202E4Ce1Ff6Dad0c2CB002861d3e], 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5)
+    │   ├─ [109833] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::redeem(20000000 [2e7], bob: [0x1D96F2f6BeF1202E4Ce1Ff6Dad0c2CB002861d3e], 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [delegatecall]
+    │   │   ├─ emit Transfer(from: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, to: 0x0000000000000000000000000000000000000000, amount: 20000000 [2e7])
+    │   │   ├─ emit RedeemRequested(caller: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, receiver: bob: [0x1D96F2f6BeF1202E4Ce1Ff6Dad0c2CB002861d3e], requestId: 2, assets: 20000000 [2e7], shares: 20000000 [2e7], requestedTime: 1780052863 [1.78e9])
+    │   │   └─ ← [Return] 2
+    │   └─ ← [Return] 2
+    ├─ [110290] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::redeem(10000000 [1e7], charlie: [0xea475d60c118d7058beF4bDd9c32bA51139a74e0], 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5)
+    │   ├─ [109833] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::redeem(10000000 [1e7], charlie: [0xea475d60c118d7058beF4bDd9c32bA51139a74e0], 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5) [delegatecall]
+    │   │   ├─ emit Transfer(from: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, to: 0x0000000000000000000000000000000000000000, amount: 10000000 [1e7])
+    │   │   ├─ emit RedeemRequested(caller: 0x650a4c074a58B18fbEEd48ae766e58a382D9E5F5, receiver: charlie: [0xea475d60c118d7058beF4bDd9c32bA51139a74e0], requestId: 3, assets: 10000000 [1e7], shares: 10000000 [1e7], requestedTime: 1780052863 [1.78e9])
+    │   │   └─ ← [Return] 3
+    │   └─ ← [Return] 3
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [0] VM::store(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, 0x0000000000000000000000000000000000000000000000000000000000000172, 0x0000000000000000000000000000000000000000000000000000000003dfd240)
+    │   └─ ← [Return]
+    ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [staticcall]
+    │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [delegatecall]
+    │   │   └─ ← [Return] 145000000 [1.45e8]
+    │   └─ ← [Return] 145000000 [1.45e8]
+    ├─ [0] VM::load(0xd077A400968890Eacc75cdc901F0356c943e4fDb, 0xd4364f277ded65c9f38da64ea506b5f3243c9248c93c7f0eaab9ce5e800b5730) [staticcall]
+    │   └─ ← [Return] 0x0000000000000000000000000000000000000000000000000000000008a48640
+    ├─ [0] VM::store(0xd077A400968890Eacc75cdc901F0356c943e4fDb, 0xd4364f277ded65c9f38da64ea506b5f3243c9248c93c7f0eaab9ce5e800b5730, 0x0000000000000000000000000000000000000000000000000000000003dfd240)
+    │   └─ ← [Return]
+    ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [staticcall]
+    │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [delegatecall]
+    │   │   └─ ← [Return] 65000000 [6.5e7]
+    │   └─ ← [Return] 65000000 [6.5e7]
+    ├─ [0] console::log("\n=== AFTER 3 REDEEM REQUESTS ===") [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("req1 id (alice,   50 USDT):", 1) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("req2 id (bob,     20 USDT):", 2) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("req3 id (charlie, 10 USDT):", 3) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [2211] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::assetBalance() [staticcall]
+    │   ├─ [1766] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::assetBalance() [delegatecall]
+    │   │   └─ ← [Return] 65000000 [6.5e7]
+    │   └─ ← [Return] 65000000 [6.5e7]
+    ├─ [0] console::log("_managedAssets             :", 65000000 [6.5e7]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [1177] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::totalLockedAssets() [staticcall]
+    │   ├─ [732] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::totalLockedAssets() [delegatecall]
+    │   │   └─ ← [Return] 80000000 [8e7]
+    │   └─ ← [Return] 80000000 [8e7]
+    ├─ [0] console::log("totalLockedAssets          :", 80000000 [8e7]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [957] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::accClaimedAmount() [staticcall]
+    │   ├─ [512] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::accClaimedAmount() [delegatecall]
+    │   │   └─ ← [Return] 0
+    │   └─ ← [Return] 0
+    ├─ [0] console::log("accClaimedAmount           :", 0) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [959] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::accRedeemRequestedAmount(1) [staticcall]
+    │   ├─ [511] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::accRedeemRequestedAmount(1) [delegatecall]
+    │   │   └─ ← [Return] 50000000 [5e7]
+    │   └─ ← [Return] 50000000 [5e7]
+    ├─ [0] console::log("accRedeemRequestedAmount[req1]:", 50000000 [5e7]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [959] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::accRedeemRequestedAmount(2) [staticcall]
+    │   ├─ [511] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::accRedeemRequestedAmount(2) [delegatecall]
+    │   │   └─ ← [Return] 70000000 [7e7]
+    │   └─ ← [Return] 70000000 [7e7]
+    ├─ [0] console::log("accRedeemRequestedAmount[req2]:", 70000000 [7e7]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] VM::warp(1780139264 [1.78e9])
+    │   └─ ← [Return]
+    ├─ [957] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::accClaimedAmount() [staticcall]
+    │   ├─ [512] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::accClaimedAmount() [delegatecall]
+    │   │   └─ ← [Return] 0
+    │   └─ ← [Return] 0
+    ├─ [2847] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::totalClaimLoss() [staticcall]
+    │   ├─ [2402] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::totalClaimLoss() [delegatecall]
+    │   │   └─ ← [Return] 0
+    │   └─ ← [Return] 0
+    ├─ [0] VM::prank(bob: [0x1D96F2f6BeF1202E4Ce1Ff6Dad0c2CB002861d3e])
+    │   └─ ← [Return]
+    ├─ [65546] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::claim(2, 10000 [1e4])
+    │   ├─ [65095] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::claim(2, 10000 [1e4]) [delegatecall]
+    │   │   ├─ [26005] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::transfer(bob: [0x1D96F2f6BeF1202E4Ce1Ff6Dad0c2CB002861d3e], 15000000 [1.5e7])
+    │   │   │   ├─ [25342] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::transfer(bob: [0x1D96F2f6BeF1202E4Ce1Ff6Dad0c2CB002861d3e], 15000000 [1.5e7]) [delegatecall]
+    │   │   │   │   ├─ emit Transfer(from: 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, to: bob: [0x1D96F2f6BeF1202E4Ce1Ff6Dad0c2CB002861d3e], amount: 15000000 [1.5e7])
+    │   │   │   │   └─ ← [Return] true
+    │   │   │   └─ ← [Return] true
+    │   │   ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [staticcall]
+    │   │   │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [delegatecall]
+    │   │   │   │   └─ ← [Return] 50000000 [5e7]
+    │   │   │   └─ ← [Return] 50000000 [5e7]
+    │   │   ├─ emit Claimed(caller: bob: [0x1D96F2f6BeF1202E4Ce1Ff6Dad0c2CB002861d3e], requestId: 2, assets: 20000000 [2e7], claimable: 15000000 [1.5e7])
+    │   │   └─ ← [Return] 15000000 [1.5e7]
+    │   └─ ← [Return] 15000000 [1.5e7]
+    ├─ [957] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::accClaimedAmount() [staticcall]
+    │   ├─ [512] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::accClaimedAmount() [delegatecall]
+    │   │   └─ ← [Return] 20000000 [2e7]
+    │   └─ ← [Return] 20000000 [2e7]
+    ├─ [847] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::totalClaimLoss() [staticcall]
+    │   ├─ [402] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::totalClaimLoss() [delegatecall]
+    │   │   └─ ← [Return] 5000000 [5e6]
+    │   └─ ← [Return] 5000000 [5e6]
+    ├─ [0] console::log("\n=== BOB CLAIMS req2 (maxLoss=100%) ===") [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("Bob requested              : 20000000") [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("Bob received (assetsOut)   :", 15000000 [1.5e7]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("accClaimedAmount delta     :", 20000000 [2e7]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("totalClaimLoss delta       :", 5000000 [5e6]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [2211] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::assetBalance() [staticcall]
+    │   ├─ [1766] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::assetBalance() [delegatecall]
+    │   │   └─ ← [Return] 50000000 [5e7]
+    │   └─ ← [Return] 50000000 [5e7]
+    ├─ [0] console::log("_managedAssets             :", 50000000 [5e7]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("\n[BUG] accClaimedAmount inflated by:", 5000000 [5e6], "(phantom USDT)") [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("[BUG] correct value would be       :", 15000000 [1.5e7]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("[BUG] actual value is              :", 20000000 [2e7]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] VM::prank(alice: [0x328809Bc894f92807417D2dAD6b7C998c1aFdac6])
+    │   └─ ← [Return]
+    ├─ [43575] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::claim(1, 0)
+    │   ├─ [43124] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::claim(1, 0) [delegatecall]
+    │   │   ├─ [26005] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::transfer(alice: [0x328809Bc894f92807417D2dAD6b7C998c1aFdac6], 50000000 [5e7])
+    │   │   │   ├─ [25342] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::transfer(alice: [0x328809Bc894f92807417D2dAD6b7C998c1aFdac6], 50000000 [5e7]) [delegatecall]
+    │   │   │   │   ├─ emit Transfer(from: 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, to: alice: [0x328809Bc894f92807417D2dAD6b7C998c1aFdac6], amount: 50000000 [5e7])
+    │   │   │   │   └─ ← [Return] true
+    │   │   │   └─ ← [Return] true
+    │   │   ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [staticcall]
+    │   │   │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [delegatecall]
+    │   │   │   │   └─ ← [Return] 0
+    │   │   │   └─ ← [Return] 0
+    │   │   ├─ emit Claimed(caller: alice: [0x328809Bc894f92807417D2dAD6b7C998c1aFdac6], requestId: 1, assets: 50000000 [5e7], claimable: 50000000 [5e7])
+    │   │   └─ ← [Return] 50000000 [5e7]
+    │   └─ ← [Return] 50000000 [5e7]
+    ├─ [0] console::log("\n=== ALICE CLAIMS req1 ===") [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("Alice received    :", 50000000 [5e7]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [2211] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::assetBalance() [staticcall]
+    │   ├─ [1766] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::assetBalance() [delegatecall]
+    │   │   └─ ← [Return] 0
+    │   └─ ← [Return] 0
+    ├─ [0] console::log("_managedAssets    :", 0) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [957] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::accClaimedAmount() [staticcall]
+    │   ├─ [512] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::accClaimedAmount() [delegatecall]
+    │   │   └─ ← [Return] 70000000 [7e7]
+    │   └─ ← [Return] 70000000 [7e7]
+    ├─ [0] console::log("accClaimedAmount  :", 70000000 [7e7]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] VM::prank(charlie: [0xea475d60c118d7058beF4bDd9c32bA51139a74e0])
+    │   └─ ← [Return]
+    ├─ [22659] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::claim(3, 10000 [1e4])
+    │   ├─ [22208] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::claim(3, 10000 [1e4]) [delegatecall]
+    │   │   ├─ [6105] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::transfer(charlie: [0xea475d60c118d7058beF4bDd9c32bA51139a74e0], 0)
+    │   │   │   ├─ [5442] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::transfer(charlie: [0xea475d60c118d7058beF4bDd9c32bA51139a74e0], 0) [delegatecall]
+    │   │   │   │   ├─ emit Transfer(from: 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33, to: charlie: [0xea475d60c118d7058beF4bDd9c32bA51139a74e0], amount: 0)
+    │   │   │   │   └─ ← [Return] true
+    │   │   │   └─ ← [Return] true
+    │   │   ├─ [1219] 0xd077A400968890Eacc75cdc901F0356c943e4fDb::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [staticcall]
+    │   │   │   ├─ [559] 0xC3D8795FeC92538eC36e67dEA1978935F21cBBF2::balanceOf(0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33) [delegatecall]
+    │   │   │   │   └─ ← [Return] 0
+    │   │   │   └─ ← [Return] 0
+    │   │   ├─ emit Claimed(caller: charlie: [0xea475d60c118d7058beF4bDd9c32bA51139a74e0], requestId: 3, assets: 10000000 [1e7], claimable: 0)
+    │   │   └─ ← [Return] 0
+    │   └─ ← [Return] 0
+    ├─ [0] console::log("\n=== CHARLIE CLAIMS req3 ===") [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("Charlie received  :", 0) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [2211] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::assetBalance() [staticcall]
+    │   ├─ [1766] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::assetBalance() [delegatecall]
+    │   │   └─ ← [Return] 0
+    │   └─ ← [Return] 0
+    ├─ [0] console::log("_managedAssets    :", 0) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [1177] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::totalLockedAssets() [staticcall]
+    │   ├─ [732] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::totalLockedAssets() [delegatecall]
+    │   │   └─ ← [Return] 0
+    │   └─ ← [Return] 0
+    ├─ [0] console::log("totalLockedAssets :", 0) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [847] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::totalClaimLoss() [staticcall]
+    │   ├─ [402] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::totalClaimLoss() [delegatecall]
+    │   │   └─ ← [Return] 15000000 [1.5e7]
+    │   └─ ← [Return] 15000000 [1.5e7]
+    ├─ [0] console::log("totalClaimLoss    :", 15000000 [1.5e7]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [847] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::totalClaimLoss() [staticcall]
+    │   ├─ [402] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::totalClaimLoss() [delegatecall]
+    │   │   └─ ← [Return] 15000000 [1.5e7]
+    │   └─ ← [Return] 15000000 [1.5e7]
+    ├─ [0] console::log("\n=== FINAL SUMMARY ===") [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("Bob received    :", 15000000 [1.5e7], "/ 20e6 requested") [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("Alice received  :", 50000000 [5e7], "/ 50e6 requested") [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("Charlie received:", 0, "/ 10e6 requested") [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("Total paid out  :", 65000000 [6.5e7], "/ 80e6 requested") [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("Phantom accClaimedAmount inflation :", 5000000 [5e6]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [847] 0x4E4654cE4Ca7ff0ba66a0A4a588A4bd55A6f9A33::totalClaimLoss() [staticcall]
+    │   ├─ [402] 0x570435b7ABCc8241Cfdbcbf05Ba960218acCd190::totalClaimLoss() [delegatecall]
+    │   │   └─ ← [Return] 15000000 [1.5e7]
+    │   └─ ← [Return] 15000000 [1.5e7]
+    ├─ [0] console::log("recoverClaimLoss() would mint this many governance shares backed by nothing:", 15000000 [1.5e7]) [staticcall]
+    │   └─ ← [Stop]
+    └─ ← [Return]
+
+Suite result: ok. 1 passed; 0 failed; 0 skipped; finished in 19.60s (18.41s CPU time)
+
+Ran 1 test suite in 21.67s (19.60s CPU time): 1 tests passed, 0 failed, 0 skipped (1 total tests)
