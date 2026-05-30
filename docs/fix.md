@@ -1,4 +1,4 @@
-# Fix this stupid shit
+# Fix 
 
 ## Location
 
